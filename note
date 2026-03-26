@@ -1,0 +1,1 @@
+(Catatan: Nanti saat Guru menambahkan/upload CSV mahasiswa baru, backend harus mendaftarkan mereka ke Supabase Auth menggunakan kombinasi email dan password di atas).
