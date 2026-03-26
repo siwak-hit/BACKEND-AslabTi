@@ -79,6 +79,46 @@ exports.loginStudent = async (req, res) => {
     }
 };
 
+exports.loginTeacher = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Validasi input
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: "Email dan password wajib diisi." });
+        }
+
+        // 1. Eksekusi login menggunakan sistem Auth bawaan Supabase
+        const authData = await authModel.signInWithEmail(email, password);
+
+        // 2. Ambil data profil untuk mengecek role
+        const profile = await authModel.getProfileById(authData.user.id);
+        
+        if (!profile || profile.role !== 'teacher') {
+            return res.status(403).json({ success: false, message: "Akses ditolak. Akun ini bukan milik Asisten Lab." });
+        }
+
+        // 3. Kembalikan token dan data user ke Frontend
+        res.status(200).json({
+            success: true,
+            message: "Login Asisten Lab berhasil",
+            data: {
+                user: profile,
+                session: authData.session
+            }
+        });
+
+    } catch (error) {
+        console.error("Error loginTeacher:", error);
+        res.status(401).json({
+            success: false,
+            // Pesan error dari Supabase biasanya berbahasa Inggris (Invalid login credentials)
+            message: "Email atau password yang Anda masukkan salah.",
+            error: error.message
+        });
+    }
+};
+
 exports.logout = async (req, res) => {
     try {
         const { userId } = req.body; 
