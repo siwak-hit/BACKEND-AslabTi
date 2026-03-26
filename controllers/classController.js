@@ -73,3 +73,27 @@ exports.removeClass = async (req, res) => {
         res.status(500).json({ success: false, message: "Gagal hapus kelas", error: error.message });
     }
 };
+
+// Tambahkan di bawah exports.getClasses
+exports.getClassById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const classData = await classModel.getClassById(id);
+        
+        if (!classData) {
+            return res.status(404).json({ success: false, message: "Kelas tidak ditemukan" });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: classData
+        });
+    } catch (error) {
+        console.error("Error getClassById:", error);
+        res.status(500).json({
+            success: false,
+            message: "Gagal mengambil detail kelas",
+            error: error.message
+        });
+    }
+};

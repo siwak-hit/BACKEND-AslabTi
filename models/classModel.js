@@ -12,6 +12,17 @@ const classModel = {
         return data;
     },
 
+    getClassById: async (classId) => {
+        const { data, error } = await supabase
+            .from('classes')
+            .select('*')
+            .eq('id', classId)
+            .single(); // Wajib pakai .single() agar me-return 1 object, bukan array
+            
+        if (error) throw error;
+        return data;
+    },
+
     // Fungsi create kelas baru
     createClass: async (classData) => {
         const { data, error } = await supabase
